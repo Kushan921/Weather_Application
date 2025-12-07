@@ -36,7 +36,7 @@ const CityCard: React.FC<CityCardProps> = ({ city }) => {
       <p className="temperature">{Math.round(city.main.temp)}°C</p>
       <p className="description">{city.weather[0].description}</p>
       <div className="weather-details">
-        <span>Humidity: {city.main.humidity}%</span>
+        <span>Humidity: {city.main.humidity}%</span> &nbsp;
         <span>Wind: {city.wind.speed} m/s</span>
       </div>
     </div>

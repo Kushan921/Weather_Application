@@ -23,7 +23,6 @@ function App() {
 
   async function handleSearchSelect(city: SearchResult) {
     try {
-      // Fetch weather for the searched city using lat/lon via apiClient
       const { data: weatherData } = await apiClient.get('/weather', {
         params: {
           lat: city.lat,
@@ -32,20 +31,17 @@ function App() {
         },
       });
 
-      // Ensure the response has all required fields
       if (!weatherData || !weatherData.id) {
         throw new Error('Invalid weather data returned');
       }
 
       const typedWeatherData: CityWeather = weatherData;
 
-      // Add to searched cities if not already present
       setSearchedCities((prev) => {
         const exists = prev.some((c) => c.id === typedWeatherData.id);
         return exists ? prev : [...prev, typedWeatherData];
       });
 
-      // Automatically favorite the searched city so it appears in the list
       if (!favorites.includes(typedWeatherData.id)) {
         toggle(typedWeatherData.id);
       }
@@ -54,16 +50,15 @@ function App() {
     }
   }
 
-  // Deduplicate cities and filter: keep initial cities always, keep searched cities only if favorited
+  
   const allCities = useMemo(() => {
     const cityMap = new Map<number, CityWeather>();
 
-    // Add initial cities first (always show these)
     data?.list?.forEach((city) => {
       cityMap.set(city.id, city);
     });
 
-    // Add searched cities ONLY if they are favorited
+    
     searchedCities.forEach((city) => {
       if (favorites.includes(city.id)) {
         cityMap.set(city.id, city);

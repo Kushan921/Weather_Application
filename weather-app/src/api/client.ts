@@ -1,15 +1,15 @@
 import axios from "axios";
 
 const OPENWEATHER_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+const OPENWEATHER_API_URL = import.meta.env.VITE_OPENWEATHER_API_URL;
+const OPENWEATHER_GEO_API_URL = import.meta.env.VITE_OPENWEATHER_GEO_API_URL;
 
-// Weather API client (for /data/2.5/* endpoints)
 export const apiClient = axios.create({
-  baseURL: 'https://api.openweathermap.org/data/2.5',
+  baseURL: `${OPENWEATHER_API_URL}`,
   params: { appid: OPENWEATHER_KEY }
 });
 
-// Geo API client (for /geo/1.0/* endpoints)
 export const geoClient = axios.create({
-  baseURL: 'https://api.openweathermap.org/geo/1.0',
+  baseURL: `${OPENWEATHER_GEO_API_URL}`,
   params: { appid: OPENWEATHER_KEY }
 });

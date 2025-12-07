@@ -1,4 +1,3 @@
-// src/utils/parseCities.ts
 import cities from '../assets/cities.json';
 
 interface City {
@@ -6,14 +5,10 @@ interface City {
   id?: number | string;
   city_id?: number | string;
   ID?: number | string;
-  [key: string]: any; // allow other properties without TS errors
+  [key: string]: any;
 }
 
-/**
- * Extracts initial city IDs from cities.json
- * @param limit Maximum number of city IDs to return (default 50)
- * @returns Array of numeric city IDs
- */
+
 export function getInitialCityIds(limit = 50): number[] {
   const ids: number[] = [];
 

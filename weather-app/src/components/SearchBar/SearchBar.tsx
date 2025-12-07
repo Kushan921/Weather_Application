@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import debounce from 'lodash.debounce';
 import { geoDirectSearch } from '../../api/openWeather';
 
-// Define the shape of a city result from Geo API
 interface CityResult {
   name: string;
   state?: string;
