@@ -17,25 +17,20 @@ type FavoritesProviderProps = {
 export function FavoritesProvider({ children }: FavoritesProviderProps) {
   const [favorites, setFavorites] = useState<number[]>(() => {
     try {
-      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      console.log('Loaded favorites from localStorage:', stored);
-      return stored;
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     } catch {
       return [];
     }
   });
 
   useEffect(() => {
-    console.log('Saving favorites to localStorage:', favorites);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
   }, [favorites]);
 
   const toggle = (id: number) => {
-    setFavorites((prev) => {
-      const newFavorites = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      console.log(`Toggle city ${id}: was in favorites = ${prev.includes(id)}, new favorites:`, newFavorites);
-      return newFavorites;
-    });
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useFavorites } from '../../hooks/useFavorites';
 import type { CityWeather } from '../../types';
 
@@ -8,14 +8,17 @@ interface CityCardProps {
 
 const CityCard: React.FC<CityCardProps> = ({ city }) => {
   const { favorites, toggle } = useFavorites();
-  const isFavorite = favorites.includes(city.id);
+  
+  // Memoize isFavorite calculation to ensure it updates when favorites change
+  const isFavorite = useMemo(() => {
+    return favorites.includes(city.id);
+  }, [favorites, city.id]);
+
   const iconUrl = `https://openweathermap.org/img/wn/${city.weather[0].icon}@2x.png`;
 
   const handleToggleFavorite = useCallback(() => {
-    console.log(`Toggling favorite for city ${city.id} (${city.name})`);
-    console.log(`Current isFavorite: ${isFavorite}`);
     toggle(city.id);
-  }, [city.id, city.name, isFavorite, toggle]);
+  }, [city.id, isFavorite, toggle]);
 
   return (
     <div className="city-card">
@@ -40,4 +43,4 @@ const CityCard: React.FC<CityCardProps> = ({ city }) => {
   );
 };
 
-export default CityCard;
+export default React.memo(CityCard);

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { getInitialCityIds } from './utils/parseCities';
 import { useWeatherForCityIds } from './hooks/useWeatherForCityIds';
 import { useFavorites } from './hooks/useFavorites';
+import { apiClient } from './api/client';
 import SearchBar from './components/SearchBar/SearchBar';
 import CityCard from './components/CityCard/CityCard';
 import type { CityWeather } from './types';
@@ -18,28 +19,59 @@ function App() {
   const [searchedCities, setSearchedCities] = useState<CityWeather[]>([]);
   const cityIds = getInitialCityIds(20);
   const { data, isLoading, isError, error } = useWeatherForCityIds(cityIds);
-  useFavorites(); // Hook into favorites context to trigger re-renders on changes
+  const { favorites, toggle } = useFavorites(); // Subscribe to favorites context changes
 
   async function handleSearchSelect(city: SearchResult) {
     try {
-      // Fetch weather for the searched city using lat/lon
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&units=metric&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}`
-      );
-      if (!res.ok) throw new Error('Failed to fetch weather');
-      const weatherData: CityWeather = await res.json();
-      
+      // Fetch weather for the searched city using lat/lon via apiClient
+      const { data: weatherData } = await apiClient.get('/weather', {
+        params: {
+          lat: city.lat,
+          lon: city.lon,
+          units: 'metric',
+        },
+      });
+
+      // Ensure the response has all required fields
+      if (!weatherData || !weatherData.id) {
+        throw new Error('Invalid weather data returned');
+      }
+
+      const typedWeatherData: CityWeather = weatherData;
+
       // Add to searched cities if not already present
       setSearchedCities((prev) => {
-        const exists = prev.some((c) => c.id === weatherData.id);
-        return exists ? prev : [...prev, weatherData];
+        const exists = prev.some((c) => c.id === typedWeatherData.id);
+        return exists ? prev : [...prev, typedWeatherData];
       });
+
+      // Automatically favorite the searched city so it appears in the list
+      if (!favorites.includes(typedWeatherData.id)) {
+        toggle(typedWeatherData.id);
+      }
     } catch (err) {
       console.error('Error fetching weather for searched city:', err);
     }
   }
 
-  const allCities = [...(data?.list || []), ...searchedCities];
+  // Deduplicate cities and filter: keep initial cities always, keep searched cities only if favorited
+  const allCities = useMemo(() => {
+    const cityMap = new Map<number, CityWeather>();
+
+    // Add initial cities first (always show these)
+    data?.list?.forEach((city) => {
+      cityMap.set(city.id, city);
+    });
+
+    // Add searched cities ONLY if they are favorited
+    searchedCities.forEach((city) => {
+      if (favorites.includes(city.id)) {
+        cityMap.set(city.id, city);
+      }
+    });
+
+    return Array.from(cityMap.values());
+  }, [data?.list, searchedCities, favorites]);
 
   return (
     <div>
