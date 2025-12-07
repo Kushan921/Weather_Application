@@ -1,17 +1,24 @@
-import { apiClient } from './client';
+import { apiClient, geoClient } from './client';
 
-// Batch get by city ids (max 20 per request per doc historically — check quota)
+// Fetch multiple cities WITHOUT /group (free plan compatible)
 export async function fetchWeatherByCityIds(ids: number[]) {
-  const idParam = ids.join(',');
-  const { data } = await apiClient.get('/data/2.5/group', {
-    params: { id: idParam, units: 'metric' }
-  });
-  return data;
+  const results = [];
+
+  // Fetch each city separately using /weather
+  for (const id of ids) {
+    const { data } = await apiClient.get('/weather', {
+      params: { id, units: 'metric' }
+    });
+    results.push(data);
+  }
+
+  // IMPORTANT: Make the response look similar to /group
+  return { cnt: results.length, list: results };
 }
 
 // Geocoding direct search for typeahead
 export async function geoDirectSearch(q: string, limit = 5) {
-  const { data } = await apiClient.get('/geo/1.0/direct', {
+  const { data } = await geoClient.get('/direct', {
     params: { q, limit }
   });
   return data;

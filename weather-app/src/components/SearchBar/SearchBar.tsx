@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import debounce from 'lodash.debounce';
 import { geoDirectSearch } from '../../api/openWeather';
 
@@ -26,8 +26,13 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
           setResults([]);
           return;
         }
-        const res = await geoDirectSearch(q, 5);
-        setResults(res);
+        try {
+          const res = await geoDirectSearch(q, 5);
+          setResults(res);
+        } catch (err) {
+          console.error('Search failed:', err);
+          setResults([]);
+        }
       }, 300),
     []
   );
@@ -37,15 +42,32 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
     debouncedSearch(e.target.value);
   }
 
+  function handleSelectCity(city: CityResult) {
+    onSelect(city);
+    setTerm('');
+    setResults([]);
+  }
+
   return (
-    <div>
-      <input value={term} onChange={handleChange} placeholder="Search city..." />
+    <div className="search-bar">
+      <input 
+        value={term} 
+        onChange={handleChange} 
+        placeholder="Search city..." 
+        type="text"
+      />
       {results.length > 0 && (
-        <ul>
+        <ul className="search-results">
           {results.map((r) => (
-            <li key={`${r.lat}-${r.lon}`} onClick={() => onSelect(r)}>
-              {r.name}
-              {r.state ? `, ${r.state}` : ''} — {r.country}
+            <li 
+              key={`${r.lat}-${r.lon}`} 
+              onClick={() => handleSelectCity(r)}
+              className="search-result-item"
+            >
+              <span>
+                {r.name}
+                {r.state ? `, ${r.state}` : ''} — {r.country}
+              </span>
             </li>
           ))}
         </ul>

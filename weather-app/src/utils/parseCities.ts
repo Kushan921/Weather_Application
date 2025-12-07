@@ -18,7 +18,7 @@ export function getInitialCityIds(limit = 50): number[] {
   const ids: number[] = [];
 
   for (const city of (cities as any).List as City[]) {
-    // Try multiple possible fields for the city ID
+    
     const rawId = city.CityCode ?? city.id ?? city.city_id ?? city.ID;
     const id = Number(rawId);
 
