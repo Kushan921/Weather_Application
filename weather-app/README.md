@@ -3,8 +3,6 @@
 A modern, responsive weather application built with React, TypeScript, and Vite. This application allows users to view weather information for multiple cities, search for new cities, and manage their favorite cities.
 
 
-## ✨ Features
-
 ### Core Functionality
 - **Multi-City Weather Display**: View weather information for up to 8 initial cities loaded from a JSON file
 - **City Search**: Search for cities worldwide using OpenWeatherMap Geocoding API with real-time suggestions
