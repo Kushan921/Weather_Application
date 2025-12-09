@@ -7,7 +7,7 @@ A modern, responsive weather application built with React, TypeScript, and Vite.
 - **Multi-City Weather Display**: View weather information for up to 8 initial cities loaded from a JSON file
 - **City Search**: Search for cities worldwide using OpenWeatherMap Geocoding API with real-time suggestions
 - **Favorites Management**: Add/remove cities to/from favorites with persistent storage using localStorage
-- **Weather Details**: Display comprehensive weather information including:
+- **Weather c**: Display comprehensive weather information including:
   - Current temperature
   - Weather condition with icons
   - Humidity percentage
@@ -65,7 +65,7 @@ A modern, responsive weather application built with React, TypeScript, and Vite.
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Kushan921/Weather_Application.git
    cd weather-app
    ```
 
@@ -75,10 +75,7 @@ A modern, responsive weather application built with React, TypeScript, and Vite.
    ```
 
 3. **Set up environment variables**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_OPENWEATHER_API_KEY=your_api_key_here
-   ```
+   Create a `.env` file in the root directory and paste the below envirenement variables in .env.
 
 4. **Start the development server**
    ```bash
@@ -92,6 +89,8 @@ A modern, responsive weather application built with React, TypeScript, and Vite.
 
 ### Environment Variables
 - `VITE_OPENWEATHER_API_KEY`: e584d2b1161b90463736fa10f6fb6438
+- `VITE_OPENWEATHER_API_URL`: https://api.openweathermap.org/data/2.5
+- `VITE_OPENWEATHER_GEO_API_URL`: https://api.openweathermap.org/geo/1.0
 
 ### API Configuration
 The application uses two OpenWeatherMap API endpoints:
